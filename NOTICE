@@ -1,9 +1,14 @@
 scanCandi — Candi Drone-Scan Simulation
 Copyright 2026 Russell Otniel
 
-This product is licensed under the Apache License, Version 2.0 — see the LICENSE
-file. This NOTICE file is part of that distribution and must be redistributed
-with it, as Apache-2.0 section 4(d) requires.
+The source code in this product is licensed under the Apache License,
+Version 2.0 — see the LICENSE file. This NOTICE file is part of that
+distribution and must be redistributed with it, as Apache-2.0 section 4(d)
+requires.
+
+This repository is not entirely Apache-2.0. Some material in it is third-party
+and carries its own terms, listed below; the Borobudur model and everything
+derived from it is licensed CC BY 4.0 rather than Apache-2.0.
 
 --------------------------------------------------------------------------------
 Third-party material
@@ -34,6 +39,20 @@ OctoMap (algorithms and occupancy semantics)
     That code is an independent implementation written for this project from the
     published method; no OctoMap source is vendored into it.
 
-Borobudur source mesh
-    Supplied by the project owner. Not redistributed in this repository — see
-    assets/README.md for how to supply it.
+Candi Borobudur 3D model, and everything derived from it
+    Published on Sketchfab under the Creative Commons Attribution 4.0
+    International license (CC BY 4.0):
+    https://creativecommons.org/licenses/by/4.0/
+
+    The model itself is not redistributed in this repository. Its derivatives
+    that ARE distributed here are the media under media/img/, media/video/ and
+    media/apng/ — renders, recordings and occupancy maps produced by this
+    project from the model.
+
+    THESE ARE NOT COVERED BY THE APACHE-2.0 LICENSE ABOVE. Redistributing them
+    requires keeping the attribution, indicating that changes were made, and
+    linking to the license.
+
+    Full attribution, including the creator and the modifications made:
+        assets/borobudur/LICENSE.md
+        media/BOROBUDUR_ATTRIBUTION.md

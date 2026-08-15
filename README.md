@@ -139,6 +139,12 @@ is pruning: one merged node stands for eight base voxels, or eight thousand.
   explained step by step, including what each parameter changes.
 - [`media/demo/README.md`](media/demo/README.md) — how to read the output, and
   why there is a small unobserved patch at the summit.
+- [`media/README.md`](media/README.md) — recordings of the same pipeline run
+  against the real Borobudur mesh: the orbit flight
+  ([`media/video/orbit.mp4`](media/video/orbit.mp4)) and the map filling in
+  ([`media/video/map_growth.mp4`](media/video/map_growth.mp4)). Those are
+  derived from a CC BY 4.0 model — see
+  [Third-Party Assets](#third-party-assets).
 - [Demo 2](#demo-2--ros-2-integration) — the same pipeline across a ROS 2 graph.
 
 ---
@@ -286,8 +292,13 @@ Details: [`assets/README.md`](assets/README.md) and
 [`docs/runbooks/asset-conversion.md`](docs/runbooks/asset-conversion.md).
 
 **The Borobudur mesh this project was originally built around is not
-distributed here**, and neither are recordings derived from it. Its
-redistribution rights are not established.
+distributed here**, but it is freely available: it is published on Sketchfab
+under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). It is kept out
+of the repository because it is large and the demo does not need it, not
+because of its licence. Attribution and the terms are in
+[`assets/borobudur/LICENSE.md`](assets/borobudur/LICENSE.md); recordings made
+from it and shipped here are covered by
+[`media/BOROBUDUR_ATTRIBUTION.md`](media/BOROBUDUR_ATTRIBUTION.md).
 
 ## Running the Example
 
@@ -385,8 +396,9 @@ library's own policy is in
   messier, and free-space carving matters more there than it does here.
 - **The public demo uses a synthetic scene.** It is a stepped pyramid built
   from primitives, not scanned geometry.
-- **The original scan assets cannot be redistributed**, so mapping the real
-  temple requires supplying the mesh yourself.
+- **The original scan mesh is not shipped here**, so mapping the real temple
+  means downloading it yourself, under its own CC BY 4.0 terms, and running the
+  Blender conversion once.
 - **The ROS 2 path is Linux-only** — `r2r` needs a ROS 2 installation.
 - **No SLAM, localization or planning.** The pose is known exactly because it
   was chosen.
@@ -419,10 +431,38 @@ scene or the demo belongs here.
 - **MuJoCo** — Google DeepMind. **mujoco-rs** — David Hozic.
 - **Skydio X2 model** — MuJoCo Menagerie, Google DeepMind (Apache-2.0), used
   only by the mesh-based scene.
+- **Candi Borobudur model** — `PixForge`, via
+  [Sketchfab](https://sketchfab.com/3d-models/candi-borobudur-d42b4ad2e4fd443e838df1d8df1830d0),
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The scan the
+  project is named after, and the source of the media under `media/img/`,
+  `media/video/` and `media/apng/`.
 - **Rerun** — Rerun.io. **r2r** — ROS 2 bindings for Rust.
+
+## Third-Party Assets
+
+Not every file here is Apache-2.0. One body of material is third-party and
+carries its own licence:
+
+| Material | Licence | In the repository |
+|---|---|---|
+| **Candi Borobudur** 3D model, from [Sketchfab](https://sketchfab.com/3d-models/candi-borobudur-d42b4ad2e4fd443e838df1d8df1830d0) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | Not committed — you supply it |
+| Everything derived from that model: `assets/candi_obj/`, `assets/candi_decimated.glb`, and the media under `media/img/`, `media/video/`, `media/apng/` | CC BY 4.0, as derivative works | The media **is** committed; the converted mesh is not |
+| Skydio X2 drone model, from MuJoCo Menagerie | Apache-2.0 | Not committed — you fetch it |
+| Everything else — source code, `assets/demo/`, `media/demo/`, documentation | Apache-2.0 | Committed |
+
+Redistributing anything in the CC BY 4.0 rows means keeping the attribution,
+stating that changes were made, and linking to the licence. The full
+attribution, including what this project changed, is in
+[`assets/borobudur/LICENSE.md`](assets/borobudur/LICENSE.md) and
+[`media/BOROBUDUR_ATTRIBUTION.md`](media/BOROBUDUR_ATTRIBUTION.md).
+
+**The Quick Demo touches none of this.** It runs from `assets/demo/`, which is
+original to this repository, so a fresh clone carries no third-party
+obligation.
 
 ## License
 
-Licensed under the [Apache License 2.0](LICENSE). Third-party attributions are
-listed in [`NOTICE`](NOTICE), which must be redistributed alongside the
-licence.
+The **source code** is licensed under the
+[Apache License 2.0](LICENSE) — as is everything in this repository except the
+third-party material listed above. Attributions are in [`NOTICE`](NOTICE),
+which must be redistributed alongside the licence.

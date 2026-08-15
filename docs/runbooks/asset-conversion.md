@@ -5,7 +5,11 @@ converted output is not in the repository, so this is also the step run when
 setting up a new workspace.
 
 **Prerequisites:** Blender 5.x. A portable build is enough — no installer, no
-admin rights.
+admin rights. Plus the source mesh itself: it is third-party, licensed
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), and obtained from the
+page named in [`../../assets/borobudur/LICENSE.md`](../../assets/borobudur/LICENSE.md).
+Everything this runbook produces is a derivative of it and carries the same
+terms.
 
 ## Steps
 

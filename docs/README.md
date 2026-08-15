@@ -30,7 +30,8 @@ workflow end to end. This index is for people working *on* the project.
 
 ## One screen
 
-A simulated drone orbits Borobudur inside MuJoCo. At every waypoint it renders a
+A simulated drone orbits a temple inside MuJoCo — a synthetic one by default,
+Borobudur itself if you supply the model. At every waypoint it renders a
 640×480 depth image, that image is unprojected into a world-frame point cloud,
 and the cloud is folded into a probabilistic occupancy map. The end result is a
 voxel reconstruction that replays in Rerun and publishes as a standard

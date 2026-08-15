@@ -51,8 +51,9 @@ cargo clippy -p candi-octomap-node --all-targets -- -D warnings
 That is also exactly what CI runs, and it is the crate to prefer for new logic
 that does not have to touch the simulator.
 
-**To run the scan** you also need the assets — see
-[`assets/README.md`](assets/README.md). They are not committed.
+**To run the Quick Demo** you need nothing extra: `assets/demo/` is committed.
+The mesh-based scene needs assets you supply yourself — see
+[`assets/README.md`](assets/README.md).
 
 **To work on the ROS 2 path** you need WSL with ROS 2 Jazzy and an
 `octo_map_rust` checkout beside this repository:
@@ -102,7 +103,7 @@ See [`docs/04-running.md`](docs/04-running.md).
    the pull request. The occupied-voxel count is the one that must not move for
    an unrelated reason.
 4. Add a `CHANGELOG.md` entry under `## [Unreleased]`.
-5. Update `docs/status/now.md` if you closed or opened something.
+5. Update [`ROADMAP.md`](ROADMAP.md) if this closes or opens a phase item.
 
 ## Lockfile policy
 
@@ -125,11 +126,33 @@ cargo deny check     # advisories, licences, sources, duplicates
 currently unmaintained rather than vulnerable; that is documented there rather
 than silenced.
 
+## Licensing of contributions
+
+Contributions to the **source code, the demo scene and the documentation** are
+accepted under the [Apache License 2.0](LICENSE), the licence this repository's
+own work carries.
+
+That is not the whole tree. The Borobudur model and everything derived from it
+— `assets/candi_obj/`, `assets/candi_decimated.glb`, and the media under
+`media/img/`, `media/video/` and `media/apng/` — is third-party material under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); see
+[`assets/borobudur/LICENSE.md`](assets/borobudur/LICENSE.md). Two rules follow:
+
+- **Do not relicense it.** Nothing derived from that model becomes Apache-2.0
+  by being committed here, and a pull request must not imply that it does.
+- **Adding media derived from it** means adding it to the table in
+  [`media/BOROBUDUR_ATTRIBUTION.md`](media/BOROBUDUR_ATTRIBUTION.md) in the
+  same pull request, so the attribution stays complete.
+
+Anything generated from `assets/demo/` instead is original to this repository
+and carries no such obligation — which is the reason the default demo uses it.
+
+Third-party assets of any other provenance need their licence stated in the
+pull request and recorded in [`NOTICE`](NOTICE) before they can be merged.
+
 ## Documentation
 
-All documentation is written in English. `docs/archive/` is the exception: it is
-a historical record kept verbatim in Indonesian, and it is not edited — the
-wrong conclusions in it are part of the record.
+All documentation is written in English.
 
 Every command in a README or a runbook should run as written, and every number
 should come from a run that happened. If you find one that does not, that is a

@@ -210,3 +210,7 @@ Besides the `.rrd`, `live_scan` also writes two orthographic PNG projections
 [`media/img/map_side.png`](../media/img/map_side.png)) so the reconstruction can
 be judged without opening a viewer at all. That is what answers the central
 question: does the shape read as the temple.
+
+Those two PNGs were made from the Borobudur scene, so they are derivatives of a
+CC BY 4.0 model rather than Apache-2.0 material —
+[`media/BOROBUDUR_ATTRIBUTION.md`](../media/BOROBUDUR_ATTRIBUTION.md).

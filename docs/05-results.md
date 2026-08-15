@@ -83,6 +83,10 @@ so the reconstruction can be judged directly.
 Both read plainly as Borobudur. The reconstruction is accurate, not a blob of
 voxels.
 
+Both images are derived from a third-party model under CC BY 4.0 and are not
+covered by this repository's Apache-2.0 licence; attribution is in
+[`media/BOROBUDUR_ATTRIBUTION.md`](../media/BOROBUDUR_ATTRIBUTION.md).
+
 ---
 
 ## 5.3 Octree against hash grid — 288 waypoints, release build

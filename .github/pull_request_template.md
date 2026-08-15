@@ -4,8 +4,7 @@
 
 ## Why
 
-<!-- Link the ADR if this changes a design decision, the issue otherwise.
-     If it deviates from docs/archive/plan.md, say so explicitly. -->
+<!-- Link the ADR if this changes a design decision, the issue otherwise. -->
 
 ## Measurements
 
@@ -31,5 +30,4 @@
       request in the `octo_map_rust` repository
 - [ ] New design decision recorded as an ADR in `docs/decisions/`
 - [ ] `CHANGELOG.md` updated under `## [Unreleased]`
-- [ ] `docs/status/now.md` updated
 - [ ] Measured numbers in `docs/05-results.md` updated if they moved

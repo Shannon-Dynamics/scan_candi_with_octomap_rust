@@ -17,17 +17,21 @@
 //!
 //! Writes `out/candi_scan.rrd`, which the Rerun viewer replays:
 //!
-//!   cargo run --release -p candi-sim --bin live_scan
-//!   rerun out/candi_scan.rrd
+//! ```text
+//! cargo run --release -p candi-sim --bin live_scan
+//! rerun out/candi_scan.rrd
+//! ```
 //!
 //! Flags:
 //!
-//!   --scene <path>      MJCF to scan. Defaults to the self-contained demo
-//!                       scene, which needs no external assets.
-//!   --connect           Stream into a running Rerun viewer instead of writing
-//!                       a file.
-//!   --mesh [path]       Overlay the source geometry in the recording.
-//!   --octree-no-carve   Insert endpoints only, so both maps do the same work.
+//! ```text
+//! --scene <path>      MJCF to scan. Defaults to the self-contained demo
+//!                     scene, which needs no external assets.
+//! --connect           Stream into a running Rerun viewer instead of writing
+//!                     a file.
+//! --mesh [path]       Overlay the source geometry in the recording.
+//! --octree-no-carve   Insert endpoints only, so both maps do the same work.
+//! ```
 
 use std::path::{Path, PathBuf};
 

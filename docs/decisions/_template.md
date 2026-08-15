@@ -4,8 +4,8 @@
 
 ## Context
 
-What was true before this decision, and what forced it. If it departs from
-`docs/archive/plan.md`, name the part it departs from.
+What was true before this decision, and what forced it. If it departs from an
+earlier ADR, name the part it departs from.
 
 ## Decision
 

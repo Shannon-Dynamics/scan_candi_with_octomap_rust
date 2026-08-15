@@ -1,55 +1,71 @@
 # Assets
 
-This folder is **empty in the repository**. Its contents are large, machine
-generated, and partly not ours to redistribute — so all of it is gitignored and
-prepared locally.
+Two kinds of asset live here, under two different licenses.
 
-| What is needed | Size | Where it comes from |
-|---|---|---|
-| `candi_obj/candi.obj` + `.mtl` + `candi_basecolor.png` | ~34 MB | Output of `scripts/convert_glb.py` |
-| `candi_decimated.glb` | 16 MB | Output of `scripts/convert_glb.py` — for the Rerun overlay |
-| `skydio_x2/` | ~2 MB | MuJoCo Menagerie |
+| Directory | What it is | License | In the repository |
+|---|---|---|---|
+| [`demo/`](demo/README.md) | A synthetic scene, original to this project | Apache-2.0, like the source code | **Committed** |
+| [`borobudur/`](borobudur/README.md) | Attribution for the third-party Borobudur model | Model is CC BY 4.0 | Documentation only — the model is not committed |
+| `candi_obj/`, `candi_decimated.glb` | Conversion output from the Borobudur model | CC BY 4.0 derivative | Gitignored — you generate it |
+| `skydio_x2/` | The drone model from MuJoCo Menagerie | Apache-2.0 | Gitignored — you fetch it |
 
-`scene/candi_scene.xml` loads `candi_obj/candi.obj` and `skydio_x2/`, so both
-have to exist before anything can run.
+**Nothing here is required for the default demo.** `assets/demo/` is committed
+and self-contained, so a fresh clone can run the scan immediately. The rest is
+for scanning the real temple instead.
 
 ---
 
-## 1. The temple mesh
+## 1. The demo scene — committed, nothing to do
 
-You need the source mesh `candi.glb` (Borobudur, supplied by the project owner —
-**not distributed in this repository**) and Blender 5.x:
+[`demo/demo_scene.xml`](demo/README.md) is built from MuJoCo primitives, embeds
+no third-party geometry, and is what `live_scan` loads by default.
+
+## 2. The Borobudur mesh — optional, third-party
+
+The model of **Candi Borobudur** is published on Sketchfab under
+**CC BY 4.0**. It is *not distributed in this repository*: the license permits
+redistribution with attribution, but the model is large and the demo does not
+need it, so it stays a local, opt-in step.
+
+Obtain it from the page named in
+[`borobudur/LICENSE.md`](borobudur/LICENSE.md), place the glTF at
+`assets/candi.glb`, and convert it with Blender 5.x:
 
 ```bash
 blender --background --python scripts/convert_glb.py
 ```
 
-The full procedure, the correct numbers and the list of failure modes are in
-[`../docs/runbooks/asset-conversion.md`](../docs/runbooks/asset-conversion.md).
+Correct output: **199,999 triangles**, bbox **14.946 × 14.946 × 6.000 m**. The
+full procedure and its failure modes are in
+[`../docs/runbooks/asset-conversion.md`](../docs/runbooks/asset-conversion.md);
+what the license requires of you is in
+[`borobudur/README.md`](borobudur/README.md).
 
-Correct output: **199,999 triangles**, bbox **14.946 × 14.946 × 6.000 m**.
+`scene/candi_scene.xml` loads `candi_obj/candi.obj`, so the conversion has to
+have run before that scene will open.
 
-## 2. The Skydio X2 drone model
+## 3. The Skydio X2 drone model — optional, third-party
 
-From MuJoCo Menagerie. A sparse clone, to avoid pulling the whole menagerie:
+Used only by `scene/candi_scene.xml`. From MuJoCo Menagerie, via a sparse
+clone so the whole menagerie does not come with it:
 
 ```bash
 git clone --depth 1 --filter=blob:none --sparse \
     https://github.com/google-deepmind/mujoco_menagerie.git /tmp/menagerie
 cd /tmp/menagerie && git sparse-checkout set skydio_x2
-cp -r /tmp/menagerie/skydio_x2 <repo>/assets/skydio_x2/
+cp -r /tmp/menagerie/skydio_x2 <workspace>/scan_candi_with_octomap_rust/assets/skydio_x2/
 ```
 
-The model is **Apache-2.0** licensed and its LICENSE file travels inside the
-folder.
+The model is **Apache-2.0** and its LICENSE file travels inside the folder.
 
-In `scene/candi_scene.xml` it is used as a **mocap body**: the menagerie
-model's freejoint, collision geoms, actuators and sensors are all removed — a
-mocap body must have no joints, and the rotors are never run. Its geoms are also
-moved to **group 2** so the depth camera can hide them; without that the drone
-sees its own rotors at 0.14 m.
+In the scene it is a **mocap body**: the menagerie model's freejoint, collision
+geoms, actuators and sensors are removed — a mocap body must have no joints,
+and the rotors are never run. Its geoms are moved to **group 2** so the depth
+camera can hide them; without that the drone sees its own rotors at 0.14 m.
 
-## 3. MuJoCo
+The demo scene uses a plain box instead, which is why it needs no download.
+
+## 4. MuJoCo
 
 Nothing to prepare by hand. The `auto-download-mujoco` feature downloads MuJoCo
 3.9.0 (19.5 MB) into `MUJOCO_DOWNLOAD_DIR` on the first build.
@@ -60,6 +76,8 @@ PATH / `LD_LIBRARY_PATH` **at run time**, not only at build time.
 ---
 
 ## Verification
+
+For the mesh-based scene, after conversion:
 
 ```powershell
 cargo run -p candi-sim --example scene_shot
