@@ -1,0 +1,111 @@
+<mujoco model="demo_scan">
+  <!-- A self-contained scene for the Quick Demo.
+
+       Everything here is built from MuJoCo primitives, so this file is the
+       whole scene: no meshes, no textures, no downloads, nothing to convert.
+       A fresh clone can run the scan immediately.
+
+       The structure is a synthetic stepped pyramid, not a scanned temple. It
+       exists to give the depth camera something with self-occlusion, recessed
+       terraces and a narrow summit — the geometry that makes an occupancy map
+       interesting — while being a few dozen lines of XML that this project
+       owns outright.
+
+       The body is named `candi` because that is the name the pipeline looks up
+       when it derives the orbit from the structure's bounding box. Point the
+       scan at scene/candi_scene.xml instead to map real scanned geometry. -->
+
+  <compiler autolimits="true"/>
+
+  <option timestep="0.01"/>
+
+  <!-- Pinned so depth linearization is deterministic: MjRenderer caches
+       near = znear * extent and far = zfar * extent at build() time, and
+       letting MuJoCo infer extent would silently change the depth scale
+       whenever scene geometry changes.
+       The structure is 15 x 15 x 6 m and the orbit sits at r=16.5 m, so
+       extent=17 covers the working volume, matching scene/candi_scene.xml. -->
+  <statistic center="0 0 3" extent="17"/>
+
+  <visual>
+    <global offwidth="640" offheight="480"/>
+    <map znear="0.01" zfar="5"/>
+    <quality shadowsize="2048"/>
+    <!-- Cosmetic only — depth ignores shading. A straight-down sun would leave
+         the vertical faces almost black in the RGB view. -->
+    <headlight ambient="0.45 0.45 0.45" diffuse="0.5 0.5 0.5" specular="0.1 0.1 0.1"/>
+  </visual>
+
+  <asset>
+    <texture name="skybox" type="skybox" builtin="gradient"
+             rgb1="0.35 0.5 0.7" rgb2="0.9 0.9 0.95" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.25 0.3 0.28"
+             rgb2="0.3 0.35 0.33" width="512" height="512"/>
+    <material name="grid" texture="grid" texrepeat="12 12" reflectance="0.05"/>
+    <material name="stone" rgba="0.72 0.68 0.6 1" specular="0.1" shininess="0.1"/>
+    <material name="drone_body" rgba="0.2 0.22 0.25 1"/>
+  </asset>
+
+  <worldbody>
+    <light name="sun" directional="true" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2"
+           pos="20 -20 30" dir="-0.5 0.5 -0.7"/>
+    <light name="fill" directional="true" pos="-20 20 25" dir="0.5 -0.5 -0.6"
+           diffuse="0.35 0.35 0.35" specular="0 0 0"/>
+
+    <geom name="floor" type="plane" size="60 60 0.1" material="grid"/>
+
+    <!-- Static: no joint, and no collision, since the drone is kinematic and
+         never touches anything. Sizes are half-extents, so tier 1 is
+         15 x 15 x 1 m and sits with its base on z=0. -->
+    <body name="candi" pos="0 0 0">
+      <!-- Four square terraces, each set back from the one below. The setback
+           is what makes the summit invisible from a low orbit ring, which is
+           why the flight path climbs. -->
+      <geom name="tier1" type="box" size="7.5 7.5 0.5" pos="0 0 0.5"
+            material="stone" contype="0" conaffinity="0"/>
+      <geom name="tier2" type="box" size="6.0 6.0 0.6" pos="0 0 1.6"
+            material="stone" contype="0" conaffinity="0"/>
+      <geom name="tier3" type="box" size="4.5 4.5 0.7" pos="0 0 2.9"
+            material="stone" contype="0" conaffinity="0"/>
+      <geom name="tier4" type="box" size="3.0 3.0 0.6" pos="0 0 4.2"
+            material="stone" contype="0" conaffinity="0"/>
+
+      <!-- A round summit on top of the square tiers: a sphere reads very
+           differently from a box in a voxel map, which makes it easy to see
+           whether the reconstruction resolves shape or just bulk. Its top
+           reaches z = 6.0 m, fixing the structure's height. -->
+      <geom name="summit" type="sphere" size="1.2" pos="0 0 4.8"
+            material="stone" contype="0" conaffinity="0"/>
+
+      <!-- Four staircases, one per side, cutting through the terraces. They
+           are the smallest features in the scene, so they are the test of
+           whether the chosen resolution is fine enough to see anything. -->
+      <geom name="stair_px" type="box" size="1.5 0.6 2.4" pos="6.0 0 2.4"
+            material="stone" contype="0" conaffinity="0"/>
+      <geom name="stair_nx" type="box" size="1.5 0.6 2.4" pos="-6.0 0 2.4"
+            material="stone" contype="0" conaffinity="0"/>
+      <geom name="stair_py" type="box" size="0.6 1.5 2.4" pos="0 6.0 2.4"
+            material="stone" contype="0" conaffinity="0"/>
+      <geom name="stair_ny" type="box" size="0.6 1.5 2.4" pos="0 -6.0 2.4"
+            material="stone" contype="0" conaffinity="0"/>
+    </body>
+
+    <!-- Drone: a mocap body, driven kinematically along a precomputed path.
+         A plain box rather than a model, so this scene stays self-contained.
+         Starts on the orbit ring at the structure's mid-height. quat="0 0 0 1"
+         is a 180-degree yaw, so the body's +X — and therefore the camera —
+         starts out aimed back at the structure. -->
+    <body name="drone" mocap="true" pos="16.479 0 3" quat="0 0 0 1">
+      <!-- Group 2, so the depth camera can hide it. Without that the drone
+           sees its own body a few centimetres away and injects a shell of
+           occupied voxels that travels with it. -->
+      <geom name="drone_visual" type="box" size="0.25 0.25 0.06"
+            material="drone_body" group="2" contype="0" conaffinity="0" mass="0"/>
+
+      <!-- Depth camera. xyaxes sets cam +X = body -Y and cam +Y = body +Z, so
+           cam -Z (the view direction) = body +X. The orbit planner relies on
+           that convention: a waypoint quaternion only has to aim +X inward. -->
+      <camera name="drone_cam" fovy="60" pos="0 0 0" xyaxes="0 -1 0  0 0 1"/>
+    </body>
+  </worldbody>
+</mujoco>

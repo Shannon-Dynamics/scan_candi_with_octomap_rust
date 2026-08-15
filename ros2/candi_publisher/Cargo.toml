@@ -1,0 +1,23 @@
+[package]
+name = "candi_publisher"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Flies the candi orbit in MuJoCo and publishes the scan as ROS 2 topics"
+
+[[bin]]
+name = "candi_publisher"
+path = "src/main.rs"
+
+[dependencies]
+# The simulation itself is unchanged: orbit planning, depth projection and the
+# PointCloud2 byte layout all come from the existing, tested crate. This binary
+# adds transport and nothing else.
+candi-sim = { path = "../../crates/candi-sim" }
+
+mujoco-rs = { version = "5.0.0", features = [
+    "renderer",
+    "renderer-winit-fallback",
+    "auto-download-mujoco",
+] }
+r2r = "0.9"

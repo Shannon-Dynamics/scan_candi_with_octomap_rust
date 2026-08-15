@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["crates/candi-sim", "crates/candi-octomap-node"]
+
+[profile.release]
+lto = true
+codegen-units = 1

@@ -1,0 +1,26 @@
+[package]
+name = "candi-sim"
+version = "0.1.0"
+edition = "2024"
+description = "MuJoCo scene, orbit planning, depth-to-cloud projection and the live_scan binary"
+license = "Apache-2.0"
+repository = "https://github.com/Shannon-Dynamics/scan_candi_with_octomap_rust"
+publish = false
+
+[dependencies]
+candi-octomap-node = { path = "../candi-octomap-node" }
+
+# The mapping library this repository exists to demonstrate. A relative path
+# because octomap-core is not published yet; `octomap-core = "0.1"` replaces
+# this once it is. The path assumes the two repositories are checked out side
+# by side — see docs/04-running.md.
+octomap-core = { path = "../../../octo_map_rust/crates/octomap-core" }
+
+png = "0.18"
+rerun = { version = "0.35", default-features = false, features = ["sdk"] }
+mujoco-rs = { version = "5.0.0", features = [
+    "renderer",
+    "renderer-winit-fallback",
+    "auto-download-mujoco",
+    "viewer",
+] }

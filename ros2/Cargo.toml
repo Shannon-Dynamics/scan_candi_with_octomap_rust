@@ -1,0 +1,18 @@
+[workspace]
+resolver = "2"
+members = ["candi_publisher", "candi_mapper"]
+
+# Its own workspace, outside the parent's members list, because everything here
+# needs ROS 2 sourced to build — r2r generates its message bindings from
+# AMENT_PREFIX_PATH at build time. Folding these into the root workspace would
+# mean `cargo build` at the top level fails on any machine without ROS, which
+# includes the Windows side where the MuJoCo scan was developed.
+#
+# Two crates rather than two binaries in one, because the mapper has no reason
+# to compile MuJoCo and the publisher has no reason to compile Rerun. On a
+# machine where disk is the binding constraint that split is worth the extra
+# manifest.
+
+[profile.release]
+lto = true
+codegen-units = 1

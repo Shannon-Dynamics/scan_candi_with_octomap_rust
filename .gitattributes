@@ -1,0 +1,14 @@
+# Keep shell scripts LF even when checked out on Windows — ros2/*.sh run in WSL.
+*.sh text eol=lf
+
+# Normalise text, leave media alone.
+*.rs   text
+*.toml text
+*.md   text
+*.xml  text
+*.py   text
+
+*.mp4  binary
+*.apng binary
+*.png  binary
+*.html binary

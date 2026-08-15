@@ -1,0 +1,36 @@
+[package]
+name = "candi_mapper"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Subscribes to the candi scan and builds an octree and a hash grid side by side"
+
+[[bin]]
+name = "candi_mapper"
+path = "src/main.rs"
+
+[dependencies]
+# The existing hash-grid map and the height palette, unchanged. It is kept as
+# the comparison baseline, which is why this crate depends on both mapping
+# implementations rather than replacing one with the other.
+candi-octomap-node = { path = "../../crates/candi-octomap-node" }
+
+# The octree and the ROS conversions, from the library project. A relative path
+# rather than a registry dependency because octomap-core is not published yet;
+# `octomap-core = "0.1"` replaces both lines once it is.
+#
+# The path assumes the two repositories are checked out side by side:
+#
+#     <parent>/octo_map_rust/
+#     <parent>/scan_candi_with_octomap_rust/     <- this repository
+#
+# That layout is a prerequisite for building anything under ros2/ — see
+# docs/04-running.md. If you keep the library somewhere else, override the two
+# paths in .cargo/config.toml rather than editing this file.
+octomap-core = { path = "../../../octo_map_rust/crates/octomap-core" }
+octomap-ros = { path = "../../../octo_map_rust/crates/octomap-ros" }
+
+r2r = "0.9"
+rerun = { version = "0.35", default-features = false, features = ["sdk"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal"] }
+futures = "0.3"

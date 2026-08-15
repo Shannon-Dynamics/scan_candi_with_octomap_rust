@@ -1,0 +1,39 @@
+scanCandi — Candi Drone-Scan Simulation
+Copyright 2026 Russell Otniel
+
+This product is licensed under the Apache License, Version 2.0 — see the LICENSE
+file. This NOTICE file is part of that distribution and must be redistributed
+with it, as Apache-2.0 section 4(d) requires.
+
+--------------------------------------------------------------------------------
+Third-party material
+--------------------------------------------------------------------------------
+
+Skydio X2 model (assets/skydio_x2/)
+    From MuJoCo Menagerie, Google DeepMind. Licensed under Apache-2.0.
+    Its own LICENSE file travels with the model directory and must be retained.
+    https://github.com/google-deepmind/mujoco_menagerie
+
+octomap-core, octomap-ros (path dependencies of ros2/candi_mapper)
+    From the sibling octoMap-rust project, licensed under Apache-2.0. That
+    project carries its own NOTICE retaining OctoMap's original BSD-3-Clause
+    terms; both files must accompany any redistribution that includes it.
+
+MuJoCo
+    Google DeepMind, licensed under Apache-2.0. Downloaded at build time by the
+    `auto-download-mujoco` feature; not redistributed in this repository.
+
+OctoMap (algorithms and occupancy semantics)
+    The probabilistic occupancy model implemented in
+    crates/candi-octomap-node/src/occupancy.rs follows the method described in:
+
+        A. Hornung, K.M. Wurm, M. Bennewitz, C. Stachniss, and W. Burgard,
+        "OctoMap: An Efficient Probabilistic 3D Mapping Framework Based on
+        Octrees", Autonomous Robots, 2013.
+
+    That code is an independent implementation written for this project from the
+    published method; no OctoMap source is vendored into it.
+
+Borobudur source mesh
+    Supplied by the project owner. Not redistributed in this repository — see
+    assets/README.md for how to supply it.

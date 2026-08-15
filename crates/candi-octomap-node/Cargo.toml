@@ -1,0 +1,16 @@
+[package]
+name = "candi-octomap-node"
+version = "0.1.0"
+edition = "2024"
+description = "Hash-grid occupancy map, PointCloud2 byte parsing and height palette for the candi scan"
+license = "Apache-2.0"
+repository = "https://github.com/Shannon-Dynamics/scan_candi_with_octomap_rust"
+# Part of a reference application, not a library anyone should depend on. The
+# reusable mapping library is octomap-core, in the octo_map_rust repository.
+publish = false
+
+[dependencies]
+# Deliberately none. The mapping, palette and cloud-parsing code is plain Rust
+# with no rendering or ROS types in it, so `cargo test -p candi-octomap-node`
+# stays a seconds-long build. rerun lives in candi-sim, which owns the binary
+# that does the logging.

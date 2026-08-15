@@ -1,0 +1,82 @@
+<mujoco model="candi_scan">
+  <!-- Asset paths resolve relative to this file's directory. -->
+  <compiler assetdir="../assets" autolimits="true"/>
+
+  <option timestep="0.01"/>
+
+  <!-- Pinned so depth linearization is deterministic: MjRenderer caches
+       near = znear * extent and far = zfar * extent at build() time, and
+       letting MuJoCo infer extent would silently change the depth scale
+       whenever scene geometry changes.
+       The candi is 14.95 x 14.95 x 6.0 m and the orbit sits at r=16.5 m, so
+       extent=17 covers the working volume: near = 0.17 m, far = 85 m. -->
+  <statistic center="0 0 3" extent="17"/>
+
+  <visual>
+    <global offwidth="640" offheight="480"/>
+    <map znear="0.01" zfar="5"/>
+    <quality shadowsize="2048"/>
+    <!-- Cosmetic only (depth ignores shading). A straight-down sun leaves the
+         temple's vertical faces almost black, so the headlight lifts them. -->
+    <headlight ambient="0.45 0.45 0.45" diffuse="0.5 0.5 0.5" specular="0.1 0.1 0.1"/>
+  </visual>
+
+  <asset>
+    <texture name="skybox" type="skybox" builtin="gradient"
+             rgb1="0.35 0.5 0.7" rgb2="0.9 0.9 0.95" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.25 0.3 0.28"
+             rgb2="0.3 0.35 0.33" width="512" height="512"/>
+    <material name="grid" texture="grid" texrepeat="12 12" reflectance="0.05"/>
+
+    <!-- Candi, converted by scripts/convert_glb.py: 2.14M triangles decimated
+         to 200k, scaled to 6 m tall, recentred on the origin and dropped onto
+         z=0. Already in metres and Z-up, so no scale/quat correction here.
+         obj2mjcf was not needed: the mesh carries a single material and needs
+         no collision decomposition, which is all that tool would have added. -->
+    <texture name="candi_tex" type="2d" file="candi_obj/candi_basecolor.png"/>
+    <material name="candi_mat" texture="candi_tex" specular="0.1" shininess="0.1"/>
+    <mesh name="candi_mesh" file="candi_obj/candi.obj"/>
+
+    <!-- Skydio X2 visual mesh (menagerie ships it in cm, hence scale 0.01). -->
+    <texture name="x2_tex" type="2d"
+             file="skydio_x2/assets/X2_lowpoly_texture_SpinningProps_1024.png"/>
+    <material name="phong3SG" texture="x2_tex"/>
+    <mesh name="X2_lowpoly" file="skydio_x2/assets/X2_lowpoly.obj"
+          scale="0.01 0.01 0.01"/>
+  </asset>
+
+  <worldbody>
+    <!-- Tilted rather than straight down, so terrace walls catch light. -->
+    <light name="sun" directional="true" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2"
+           pos="20 -20 30" dir="-0.5 0.5 -0.7"/>
+    <light name="fill" directional="true" pos="-20 20 25" dir="0.5 -0.5 -0.6"
+           diffuse="0.35 0.35 0.35" specular="0 0 0"/>
+
+    <geom name="floor" type="plane" size="60 60 0.1" material="grid"/>
+
+    <!-- Static: no joint, and no collision since nothing ever touches it. -->
+    <body name="candi" pos="0 0 0">
+      <geom name="candi_geom" type="mesh" mesh="candi_mesh" material="candi_mat"
+            contype="0" conaffinity="0"/>
+    </body>
+
+    <!-- Drone: mocap body, driven kinematically. The menagerie freejoint,
+         collision geoms, actuators and sensors are all dropped — a mocap body
+         may not carry joints, and we never run its rotors.
+         Starts on the orbit ring (r=16.48 m) at the candi's mid-height.
+         quat="0 0 0 1" is a 180-deg yaw, so the body's +X (and therefore the
+         camera) starts out aimed back at the candi. -->
+    <body name="drone" mocap="true" pos="16.479 0 3" quat="0 0 0 1">
+      <geom name="drone_visual" type="mesh" mesh="X2_lowpoly" material="phong3SG"
+            quat="0 0 1 1" group="2" contype="0" conaffinity="0" mass="0"/>
+
+      <!-- Depth camera. xyaxes sets cam +X = body -Y and cam +Y = body +Z, so
+           cam -Z (the view direction) = body +X. Convention for phase B: the
+           drone's local +X axis points at the candi, so the orbit quaternion
+           only has to aim +X inward.
+           Group 2 (the drone's own mesh) is hidden from this camera at render
+           time — see depth_camera_options() in candi-sim/src/lib.rs. -->
+      <camera name="drone_cam" fovy="60" pos="0 0 0" xyaxes="0 -1 0  0 0 1"/>
+    </body>
+  </worldbody>
+</mujoco>

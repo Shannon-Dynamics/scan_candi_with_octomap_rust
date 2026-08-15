@@ -1,0 +1,52 @@
+# Rust
+/target
+/ros2/target
+/target-wsl
+**/*.rs.bk
+
+# MuJoCo, downloaded by the build on first run (~19.5 MB)
+/.mujoco
+
+# Prebuilt tooling — Rerun viewer, portable Blender
+/.tools
+
+# Run output: recordings, logs, generated projections.
+# The curated copies that belong in the repo live in media/ instead.
+/out
+
+# Generated assets. Regenerate with scripts/convert_glb.py — see assets/README.md.
+# assets/demo/ is committed: it is the self-contained Quick Demo scene.
+/assets/candi_obj
+/assets/candi_mjcf
+/assets/skydio_x2
+/assets/candi_decimated.glb
+/assets/candi.glb
+/3dCandi
+
+# Recordings and meshes are never committed: a source mesh alone is tens of MB
+# and a single .rrd is 23-155 MB.
+*.rrd
+*.glb
+*.obj
+*.bt
+
+# Secrets and local configuration. None of these are used by the project as it
+# stands; they are listed so that adding one later cannot be committed by
+# accident.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# Editors, OS and local tooling
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+/.claude/
+
+# Cargo.lock is committed for both workspaces. This is an application: a
+# reproducible build is the point, and the lockfile is what makes two people
+# get the same dependency versions.

@@ -1,0 +1,61 @@
+# cargo-deny configuration.
+#
+# Run with `cargo deny check`. This is an application rather than a library, so
+# the question it answers is different from the one in the mapping library's
+# repository: what is actually redistributed if someone ships a build of this,
+# and does anything in that set carry an advisory.
+#
+# CI does not run this — the dependency tree here needs MuJoCo and a full
+# resolve. It is a maintainer check, listed in CONTRIBUTING.md.
+
+[advisories]
+# No advisory is ignored: a security advisory against anything in this tree
+# fails the check.
+ignore = []
+
+# Unmaintained advisories are reported for crates this workspace depends on
+# directly, not for everything underneath them. Two transitive crates are
+# currently flagged as unmaintained — `paste`, a proc-macro with no runtime
+# presence, and `ttf-parser`, which is not built for the targets used here.
+# Neither is a vulnerability and neither can be resolved from this repository;
+# they clear when Rerun and mujoco-rs update. Failing every build on them would
+# train people to ignore this check, which is worse than seeing them in a
+# maintainer's `cargo audit` run.
+unmaintained = "workspace"
+
+[licenses]
+# The permissive set this tree actually contains, listed rather than
+# pattern-matched so a new licence shows up as a failure instead of slipping
+# in. MuJoCo, Rerun and the Skydio X2 model are all Apache-2.0 or MIT.
+allow = [
+    "Apache-2.0",
+    "MIT",
+    "BSD-3-Clause",
+    "BSD-2-Clause",
+    "ISC",
+    "Zlib",
+    "Unicode-3.0",
+    "MPL-2.0",
+    "CC0-1.0",
+    "OFL-1.1",
+    "BSL-1.0",
+    # webpki-roots ships the Mozilla root-certificate bundle, which is data
+    # rather than code and carries a permissive data licence.
+    "CDLA-Permissive-2.0",
+]
+confidence-threshold = 0.9
+
+[bans]
+# A 569-crate tree will have duplicate versions. That is information for a
+# maintainer, not a defect to fail a build over.
+multiple-versions = "warn"
+# The crates in this workspace depend on each other by path without a version.
+# cargo-deny reads that as a wildcard requirement, which is a real problem for
+# something being published and not one for an application that never is — all
+# the crates here are `publish = false`. Warn so it stays visible.
+wildcards = "warn"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
